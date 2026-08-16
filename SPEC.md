@@ -99,3 +99,24 @@ mirroring schema.org `Product`/`Offer`:
 - Multiple products on one page: use the section map (`# +section product = <slug>`)
   with one page-level block per page remaining the primary record, or one page
   per product (preferred — cleaner crawl units).
+
+## 7. Consumer guidance (ranking & trust)
+
+MeshData is author-declared and therefore an adversarial surface for any
+consumer that lets it influence ranking. Recommended posture (as implemented
+by Beacon, the reference consumer):
+
+- **Cap the schema bonus.** Presence/completeness of a head block should be a
+  bounded boost, never a dominant term — a stuffed head block must not beat
+  genuine text relevance.
+- **Date sanity.** Ignore `date`/`published`/`updated` values in the future or
+  implausibly old; fall back to crawl-observed times (first seen / content
+  last changed). Declared dates refine recency; they must not fabricate it.
+- **Type cross-check.** If the declared `type` wildly contradicts the page's
+  inferred shape, rank by the inferred type (still display the declared one).
+  Declaration is a hint, not an assertion.
+- **`canonical` is for dedupe.** Pages sharing a `canonical` value are one
+  logical document — collapse them in results (mirrors are common on the
+  mesh); attribute to the best-ranked copy.
+- MeshData remains **inert** (§4): none of this changes rendering; it only
+  bounds how much machine trust the block earns.
