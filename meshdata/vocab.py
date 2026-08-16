@@ -10,6 +10,13 @@ VERSION = "0.1"
 FIELDS = ("type", "title", "author", "date", "published", "updated",
           "description", "tags", "lang", "image", "canonical")
 
+# Commerce fields, meaningful when type == "product". Names mirror schema.org
+# Product/Offer (price/priceCurrency/availability/sku/brand -> a clearnet
+# bridge is a rename). `shop` = the MeshAPI destination hash where buy ops
+# (catalog/cart/order) live -- the doorway from a search result to a seller.
+COMMERCE_FIELDS = ("price", "currency", "availability", "sku", "vendor", "shop")
+AVAILABILITY = ("in_stock", "made_to_order", "out_of_stock", "digital")
+
 # Page-type taxonomy. maps_to = the nearest schema.org type (for a future bridge).
 TYPES = {
     "index":      "WebSite",            # a node's home / landing page
@@ -25,6 +32,7 @@ TYPES = {
     "media":      "MediaObject",        # image/audio/video index
     "dataset":    "Dataset",
     "event":      "Event",
+    "product":    "Product",           # a purchasable item (see COMMERCE_FIELDS)
 }
 
 DEFAULT_TYPE = "index"
