@@ -71,3 +71,31 @@ with better categorization/ranking rather than required.
 ## 5. Versioning
 `0.1`. An optional `# +meshdata: 0.1` line may state the version; absence implies
 current. Unknown versions: read what you understand.
+
+## 6. Commerce extension (0.1): `type: product`
+
+A purchasable item is a page (or section) typed `product`, with commerce fields
+mirroring schema.org `Product`/`Offer`:
+
+```
+# +type: product
+# +title: RNode Kit v2
+# +description: Assembled 433MHz RNode, case, antenna.
+# +price: 79.00
+# +currency: USD
+# +availability: in_stock
+# +sku: EO-RNODE-2
+# +vendor: Ends & Oddity
+# +shop: <MeshAPI destination hash of the seller's shop service>
+# +tags: radio, lora
+```
+
+- `price` is a decimal string; `currency` an ISO-4217 code.
+- `availability`: `in_stock` | `made_to_order` | `out_of_stock` | `digital`.
+- `shop` is the **doorway**: the MeshAPI destination whose ops (catalog/cart/
+  order) actually sell the item — a crawler's shop view links search results
+  straight to the seller's own node/service. Reference consumer: Beacon's
+  `type: product` filter. Reference producer: rns-stall.
+- Multiple products on one page: use the section map (`# +section product = <slug>`)
+  with one page-level block per page remaining the primary record, or one page
+  per product (preferred — cleaner crawl units).
