@@ -49,7 +49,12 @@ def parse(raw):
             continue
         if key in ("tags", "keywords"):
             md["tags"] = [t.strip() for t in re.split(r"[;,]", val) if t.strip()]
-        elif key in vocab.FIELDS or key == "meshdata":
+        # Commerce fields (price/currency/availability/sku/vendor/shop) ride
+        # the same tolerant head block, gated by their own vocab set since
+        # they're only meaningful for type=="product" -- but parsed here
+        # unconditionally like every other field (declaring a field that
+        # doesn't apply to your type is harmless, not an error).
+        elif key in vocab.FIELDS or key in vocab.COMMERCE_FIELDS or key == "meshdata":
             md[key] = val
     if sections:
         md["sections"] = sections
