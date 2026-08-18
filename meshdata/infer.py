@@ -9,6 +9,7 @@ from . import vocab
 
 _HEAD = re.compile(r"^\s*>+\s*(.+)$")
 _FILE_LINK = re.compile(r"`\[[^`]*`[^:\]]*:/file/")
+_ASCII_ALNUM = re.compile(r"[A-Za-z0-9]")
 
 
 def _clean(s):
@@ -18,6 +19,15 @@ def _clean(s):
     return s.replace("`", "").strip()
 
 
+def _texty(s):
+    """True if a line is real searchable text, not decoration. Block-art mastheads
+    (███ ████), box drawing, and fancy-unicode letters (𝗕𝗘𝗔𝗖𝗢𝗡) carry ZERO ASCII
+    alphanumerics, so a crawler must not lift them as a title -- no filter can find
+    them. Require a few plain [A-Za-z0-9] characters. (A page that wants a fancy
+    visible title declares the real one in MeshData; this is the no-MeshData path.)"""
+    return len(_ASCII_ALNUM.findall(s)) >= 3
+
+
 def infer(raw, path=None):
     """Best-effort {type, title, meshdata, inferred:True} from page shape."""
     md = {"meshdata": vocab.VERSION, "inferred": True}
@@ -25,7 +35,7 @@ def infer(raw, path=None):
         m = _HEAD.match(line)
         if m:
             t = _clean(m.group(1))
-            if t:
+            if t and _texty(t):            # skip art/decoration-only headings
                 md["title"] = t[:200]
                 break
     p = (path or "").lower().rstrip("/")
@@ -40,7 +50,7 @@ def infer(raw, path=None):
         if line.lstrip().startswith(("#", ">", "-", "`=")) or not line.strip():
             continue
         d = _clean(line)
-        if len(d) > 20:
+        if len(d) > 20 and _texty(d):
             md["description"] = d[:280]
             break
     return md
