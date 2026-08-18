@@ -119,7 +119,39 @@ mirroring schema.org `Product`/`Offer`:
   with one page-level block per page remaining the primary record, or one page
   per product (preferred — cleaner crawl units).
 
-## 7. Consumer guidance (ranking & trust)
+## 7. News extension (0.1): `type: news`
+
+A news item is a page typed `news` (a `NewsArticle`), with a few fields on top of
+the core set:
+
+```
+# +type: news
+# +title: Heat-related illnesses spike in Colorado
+# +author: Colorado Sun          # the outlet
+# +publisher: Colorado Sun       # the outlet (schema.org Organization)
+# +date: 2026-08-17 14Z
+# +description: A record heat wave is straining rural clinics.
+# +region: Denver                # the locality the story is about
+# +category: health              # the topic / desk
+# +tags: colorado, denver, health, news
+# +canonical: https://coloradosun.com/2026/08/17/...   # source URL
+# +lang: en
+```
+
+- `region` — the place the story concerns (a city or state). A consumer can offer
+  localized results (Beacon matches it to a reader's saved area). Fold the same
+  value into `tags` too, so it is searchable even by consumers that ignore `region`.
+- `category` — the topic/desk. **This is a plain field, NOT the reserved
+  `# +section` directive (§2)** — `section` always means the region-typing map.
+- `publisher` — the outlet, mirroring schema.org `Organization` (usually equal to
+  `author` for syndicated news).
+- `canonical` — the original source URL: dedupes a story mirrored across many mesh
+  nodes, and lets a consumer trust the source's own timestamp.
+
+Reference producer: rns-news. Reference consumer: Beacon's `type: news` filter and
+its localized "just my area" news.
+
+## 8. Consumer guidance (ranking & trust)
 
 MeshData is author-declared and therefore an adversarial surface for any
 consumer that lets it influence ranking. Recommended posture (as implemented
