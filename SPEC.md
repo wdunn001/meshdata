@@ -30,11 +30,30 @@ never JSON — a single typo drops one line, never the whole block.
 `tags` (comma/semicolon list), `lang`, `image`, `canonical`. `description` is what
 a search engine shows as the result snippet — the `<head>`-meta equivalent.
 
-### Types (a dozen, DC/OG-sized)
-`index`, `article`, `blog`, `news`, `wiki`, `profile`, `service`, `file-index`,
-`forum`, `status`, `media`, `dataset`, `event`. Each maps to a schema.org type
-(see the reference `vocab`), e.g. `article`→`Article`, `profile`→`ProfilePage`,
-`service`→`WebAPI`, `file-index`→`DataCatalog`.
+### Types (a dozen-plus, DC/OG-sized)
+
+Each maps 1:1 to a schema.org type, so a clearnet bridge is a rename. The full
+taxonomy (the reference `vocab`):
+
+| MeshData type | schema.org | use |
+|---------------|-----------|-----|
+| `index`       | WebSite            | a node's home / landing page |
+| `article`     | Article            | a general written page |
+| `blog`        | BlogPosting        | a dated post |
+| `news`        | NewsArticle        | a news item (timely, sourced) |
+| `wiki`        | Article            | an encyclopedia article |
+| `profile`     | ProfilePage        | a node/person profile |
+| `service`     | WebAPI             | a MeshAPI service front |
+| `file-index`  | DataCatalog        | a directory of downloadable files |
+| `forum`       | DiscussionForumPosting | a thread / board |
+| `status`      | WebPage            | a dashboard / status page |
+| `media`       | MediaObject        | an image/audio/video index |
+| `dataset`     | Dataset            | a structured data collection |
+| `event`       | Event              | a scheduled happening |
+| `product`     | Product/Offer      | a purchasable item — see §6 |
+
+Unknown types are ignored, not errors (§4); a consumer falls back to inference.
+Default when absent and unclear: `index`.
 
 ## 2. Section map (typing parts of a page)
 
