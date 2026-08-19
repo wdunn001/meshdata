@@ -38,12 +38,12 @@ from an ordinary micron comment). One field per line, scanned anywhere in the fi
 | `description` | the result-snippet text (the `<head>`-meta equivalent) |
 | `tags` | comma/semicolon list, **searchable keywords** (include the words people type) |
 | `lang` | ISO language code |
-| `image` | representative image path (`/file/…`) |
+| `image` | representative image path (`/file/...`) |
 | `canonical` | logical-document URL, for cross-node dedupe of mirrors |
 
 **Types** (each maps to a schema.org type, see `vocab`):
-`index` · `article` · `blog` · `news` · `wiki` · `profile` · `service` ·
-`file-index` · `forum` · `status` · `media` · `dataset` · `event` · `product`.
+`index`, `article`, `blog`, `news`, `wiki`, `profile`, `service`,
+`file-index`, `forum`, `status`, `media`, `dataset`, `event`, `product`.
 
 **Commerce (`type: product`):** `price`, `currency` (ISO-4217), `availability`
 (`in_stock` | `made_to_order` | `out_of_stock` | `digital`), `sku`, `vendor`,
