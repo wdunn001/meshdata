@@ -73,8 +73,8 @@ heading to the given type.
 ## 3. Consumption + graceful fallback
 
 A crawler calls `describe(page, path)`: return the declared MeshData if present,
-else **infer** from page shape (first heading → title; a table of `/file/` links →
-`file-index`; `/page/index.mu` → `index`; else `article`). Never hard-fail to
+else **infer** from page shape (first heading -> title; a table of `/file/` links ->
+`file-index`; `/page/index.mu` -> `index`; else `article`). Never hard-fail to
 "uncategorized". Most pages won't be annotated at first, and adoption is rewarded
 with better categorization/ranking rather than required.
 
