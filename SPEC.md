@@ -46,6 +46,7 @@ taxonomy (the reference `vocab`):
 | `service`     | WebAPI             | a MeshAPI service front |
 | `file-index`  | DataCatalog        | a directory of downloadable files |
 | `forum`       | DiscussionForumPosting | a thread / board |
+| `chat`        | Conversation       | a chat room / chat log |
 | `status`      | WebPage            | a dashboard / status page |
 | `media`       | MediaObject        | an image/audio/video index |
 | `dataset`     | Dataset            | a structured data collection |

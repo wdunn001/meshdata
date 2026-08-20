@@ -28,6 +28,55 @@ def _texty(s):
     return len(_ASCII_ALNUM.findall(s)) >= 3
 
 
+def _clean_text(raw):
+    """Whole document through _clean, line by line: classify() sees the text a
+    reader would, not micron control codes."""
+    return "\n".join(_clean(l) for l in (raw or "").splitlines())
+
+
+# --- structural type detectors (work on plain text, so a consumer can also
+# --- reclassify already-extracted page text without refetching) ------------
+
+# chat-log line: "[[Mon,23:07] <AMajor> hello" and close variants
+_CHAT_MSG = re.compile(r"\[+\s*[A-Za-z]{2,3},?\s?\d{1,2}:\d{2}\s*\]+\s*<[^<>\n]{1,32}>")
+# generic timestamped <nick> message line
+_NICK_LINE = re.compile(r"^\s*\[[^\]\n]{2,24}\]\s*<[^<>\s][^<>\n]{0,30}>\s+\S", re.M)
+_FORUM_HINT = re.compile(r"forum|bbs|comboard|messageboard|guestbook|read_board")
+_FORUM_TEXT = re.compile(r"\b(forum|board|topics?|threads?|discussions?|replies)\b")
+_STATUS_MARKS = (re.compile(r"\buptime\b"), re.compile(r"transport instance"),
+                 re.compile(r"shared instance"), re.compile(r"\btraffic\b"),
+                 re.compile(r"connected peers|\bpeers\b"),
+                 re.compile(r"\b(rns|reticulum) ?(version|status)\b"),
+                 re.compile(r"\brate ?:"))
+_WIKI_SECTIONS = (re.compile(r"\breferences\b"), re.compile(r"external links"),
+                  re.compile(r"\bsee also\b"), re.compile(r"\bbibliography\b"),
+                  re.compile(r"from wikipedia"))
+
+
+def classify(text, path=None, title=None):
+    """Structural page type from extracted TEXT (micron already stripped), or
+    None when no specific shape matches. Order matters: the most distinctive
+    shapes first, so a chat log on a forum node still reads as chat."""
+    tl = (text or "").lower()
+    pl = ((path or "") + " " + (title or "")).lower()
+    if len(_CHAT_MSG.findall(text or "")) >= 3 or len(_NICK_LINE.findall(text or "")) >= 5:
+        return "chat"
+    if "chat" in pl and (_CHAT_MSG.search(text or "") or _NICK_LINE.search(text or "")):
+        return "chat"
+    if _FORUM_HINT.search(pl):
+        return "forum"
+    if "login" in tl and "register" in tl and _FORUM_TEXT.search(tl):
+        return "forum"
+    status_hits = sum(1 for m in _STATUS_MARKS if m.search(tl))
+    if status_hits >= 2 or (re.search(r"\bstat(us|s)\b", pl) and status_hits >= 1):
+        return "status"
+    if re.search(r"(^|/)wiki(/|\b)", pl):
+        return "wiki"
+    if sum(1 for m in _WIKI_SECTIONS if m.search(tl)) >= 2:
+        return "wiki"
+    return None
+
+
 def infer(raw, path=None):
     """Best-effort {type, title, meshdata, inferred:True} from page shape."""
     md = {"meshdata": vocab.VERSION, "inferred": True}
@@ -39,7 +88,10 @@ def infer(raw, path=None):
                 md["title"] = t[:200]
                 break
     p = (path or "").lower().rstrip("/")
-    if p in ("", "/page/index.mu") or p.endswith("/page/index.mu"):
+    shaped = classify(_clean_text(raw), path=p, title=md.get("title"))
+    if shaped:
+        md["type"] = shaped
+    elif p in ("", "/page/index.mu") or p.endswith("/page/index.mu"):
         md["type"] = "index"
     elif len(_FILE_LINK.findall(raw or "")) >= 3:
         md["type"] = "file-index"

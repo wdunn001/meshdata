@@ -28,6 +28,7 @@ TYPES = {
     "service":    "WebAPI",             # a MeshAPI service front
     "file-index": "DataCatalog",        # a directory of downloadable files
     "forum":      "DiscussionForumPosting",
+    "chat":       "Conversation",       # a live chat room / chat log page
     "status":     "WebPage",            # a dashboard/status page
     "media":      "MediaObject",        # image/audio/video index
     "dataset":    "Dataset",
