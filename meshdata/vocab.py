@@ -1,8 +1,8 @@
 """MeshData 0.1 vocabulary: the small, fixed core field + type sets.
 
 Deliberately DC/OpenGraph-sized (a handful of fields, ~dozen types), with names
-mirroring schema.org / Dublin Core / OpenGraph so a future clearnet bridge is a
-rename, not a remodel.
+mirroring schema.org / Dublin Core / OpenGraph so a future clearnet bridge is
+just a rename.
 """
 VERSION = "0.1"
 
@@ -13,7 +13,7 @@ FIELDS = ("type", "title", "author", "date", "published", "updated",
 # Commerce fields, meaningful when type == "product". Names mirror schema.org
 # Product/Offer (price/priceCurrency/availability/sku/brand -> a clearnet
 # bridge is a rename). `shop` = the MeshAPI destination hash where buy ops
-# (catalog/cart/order) live -- the doorway from a search result to a seller.
+# (catalog/cart/order) live. It is the doorway from a search result to a seller.
 COMMERCE_FIELDS = ("price", "currency", "availability", "sku", "vendor", "shop")
 AVAILABILITY = ("in_stock", "made_to_order", "out_of_stock", "digital")
 

@@ -1,5 +1,5 @@
 """Structural fallback: when a page carries no MeshData block (most pages, most
-authors, at least at first), infer a type + title from the page's shape -- in the
+authors, at least at first), infer a type + title from the page's shape, in the
 spirit of the IndieWeb Post Type Discovery algorithm. Never hard-fail to
 'uncategorized'.
 """
@@ -20,17 +20,17 @@ def _clean(s):
 
 
 def _texty(s):
-    """True if a line is real searchable text, not decoration. Block-art mastheads
+    """True if a line carries real searchable text. Block-art mastheads
     (███ ████), box drawing, and fancy-unicode letters (𝗕𝗘𝗔𝗖𝗢𝗡) carry ZERO ASCII
-    alphanumerics, so a crawler must not lift them as a title -- no filter can find
+    alphanumerics, so a crawler must not lift them as a title. No filter can find
     them. Require a few plain [A-Za-z0-9] characters. (A page that wants a fancy
     visible title declares the real one in MeshData; this is the no-MeshData path.)"""
     return len(_ASCII_ALNUM.findall(s)) >= 3
 
 
 def _clean_text(raw):
-    """Whole document through _clean, line by line: classify() sees the text a
-    reader would, not micron control codes."""
+    """Whole document through _clean, line by line, so classify() sees the text a
+    reader would see, with micron control codes stripped."""
     return "\n".join(_clean(l) for l in (raw or "").splitlines())
 
 

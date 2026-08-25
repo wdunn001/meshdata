@@ -51,9 +51,9 @@ def parse(raw):
             md["tags"] = [t.strip() for t in re.split(r"[;,]", val) if t.strip()]
         # Commerce fields (price/currency/availability/sku/vendor/shop) ride
         # the same tolerant head block, gated by their own vocab set since
-        # they're only meaningful for type=="product" -- but parsed here
-        # unconditionally like every other field (declaring a field that
-        # doesn't apply to your type is harmless, not an error).
+        # they're only meaningful for type=="product". They are parsed here
+        # unconditionally like every other field. Declaring a field that
+        # doesn't apply to your type is harmless and does not cause an error.
         elif key in vocab.FIELDS or key in vocab.COMMERCE_FIELDS or key == "meshdata":
             md[key] = val
     if sections:

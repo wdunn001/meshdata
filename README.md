@@ -4,7 +4,7 @@ A lightweight **"schema.org for micron"**. NomadNet page authors declare a page'
 **type** and **metadata** in an invisible `#`-comment head block; crawlers (like
 [Beacon](https://github.com/wdunn001/beacon)) read it to categorize pages, show
 good result snippets, and rank them. Names mirror schema.org / Dublin Core /
-OpenGraph, so a clearnet bridge is a rename, not a remodel. Part of the MeshAPI
+OpenGraph, so a clearnet bridge is just a rename. Part of the MeshAPI
 family. **Full spec: [`SPEC.md`](SPEC.md).**
 
 ```
@@ -20,7 +20,8 @@ family. **Full spec: [`SPEC.md`](SPEC.md).**
 Invisible on every NomadNet client (they discard `#` lines), no extra fetch, no
 duplication of visible content, tolerant line-scan parsing (a typo drops one line,
 never the block). When a page has no MeshData, consumers **infer** type + title
-from the page's shape rather than failing. Adoption is rewarded, not required.
+from the page's shape. Inference always returns a type, so adoption is optional
+and only improves categorization.
 
 ## At a glance
 

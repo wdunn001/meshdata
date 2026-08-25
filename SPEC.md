@@ -3,7 +3,7 @@
 MeshData is a "schema.org for micron": a tiny way for a NomadNet page author to
 declare a page's **type** and **metadata** so crawlers (like Beacon) can
 categorize it, show good result snippets, and rank it. Names mirror schema.org /
-Dublin Core / OpenGraph so a clearnet bridge is a rename, not a remodel.
+Dublin Core / OpenGraph so a clearnet bridge is just a rename.
 
 ## 1. The head block (invisible)
 
@@ -53,7 +53,7 @@ taxonomy (the reference `vocab`):
 | `event`       | Event              | a scheduled happening |
 | `product`     | Product/Offer      | a purchasable item, see §6 |
 
-Unknown types are ignored, not errors (§4); a consumer falls back to inference.
+Unknown types are ignored (§4). A consumer falls back to inference.
 Default when absent and unclear: `index`.
 
 ## 2. Section map (typing parts of a page)
@@ -76,15 +76,15 @@ heading to the given type.
 A crawler calls `describe(page, path)`: return the declared MeshData if present,
 else **infer** from page shape (first heading -> title; a table of `/file/` links ->
 `file-index`; `/page/index.mu` -> `index`; else `article`). Never hard-fail to
-"uncategorized". Most pages won't be annotated at first, and adoption is rewarded
-with better categorization/ranking rather than required.
+"uncategorized". Most pages won't be annotated at first. Adoption stays optional and earns
+better categorization and ranking when present.
 
 ## 4. Rules
 
 - MeshData is **inert**: it MUST NOT affect how the page renders (it can't,
   since it's in comments). A consumer MUST NOT execute or trust it as input
   validation.
-- Unknown fields/types are ignored, not errors.
+- Unknown fields and types are ignored, and they do not raise errors.
 - The format is language-agnostic; the `meshdata` Python package is one reference
   implementation (parse / emit / infer). Producers in any language format the same
   `# +key: value` lines.
@@ -143,8 +143,8 @@ the core set:
 - `region` is the place the story concerns (a city or state). A consumer can offer
   localized results (Beacon matches it to a reader's saved area). Fold the same
   value into `tags` too, so it is searchable even by consumers that ignore `region`.
-- `category` is the topic/desk. **This is a plain field, NOT the reserved
-  `# +section` directive (§2)**. `section` always means the region-typing map.
+- `category` is the topic/desk, a plain field. **Do not confuse it with the
+  reserved `# +section` directive (§2)**, which always means the region-typing map.
 - `publisher` is the outlet, mirroring schema.org `Organization` (usually equal to
   `author` for syndicated news).
 - `canonical` is the original source URL. It dedupes a story mirrored across many
@@ -167,7 +167,7 @@ by Beacon, the reference consumer):
   last changed). Declared dates refine recency; they must not fabricate it.
 - **Type cross-check.** If the declared `type` wildly contradicts the page's
   inferred shape, rank by the inferred type (still display the declared one).
-  Declaration is a hint, not an assertion.
+  Declaration is a hint.
 - **`canonical` is for dedupe.** Pages sharing a `canonical` value are one
   logical document. Collapse them in results (mirrors are common on the
   mesh); attribute to the best-ranked copy.
