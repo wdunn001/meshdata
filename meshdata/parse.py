@@ -26,8 +26,9 @@ _SECTION = re.compile(r"^#\s*\+section\s+([\w./-]+)\s*=\s*([^\s#]+)\s*$", re.I)
 def parse(raw):
     """Return a MeshData dict from micron text, or {} if no MeshData markers.
     Keys: meshdata (version), type, title, author, date/published/updated,
-    description, tags (list), lang, image, canonical, sections (list of
-    {type, anchor})."""
+    description, tags (list), lang, image, canonical, robots, sections
+    (list of {type, anchor}). Use meshdata.crawl_policy() to read
+    `robots` rather than string-matching it."""
     md = {}
     sections = []
     for line in (raw or "").splitlines():

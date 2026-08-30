@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "meshdata"
-version = "0.1.0"
+version = "0.2.0"
 description = "schema.org for micron: structured type/metadata for NomadNet pages, for mesh crawlers."
 readme = "README.md"
 license = { text = "MIT" }

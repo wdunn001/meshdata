@@ -4,7 +4,7 @@ Producers in other languages (e.g. The Mild Take's Node renderer) format the sam
 '# +key: value' lines directly.
 """
 _ORDER = ("type", "title", "author", "date", "published", "updated",
-          "description", "tags", "lang", "image", "canonical")
+          "description", "tags", "lang", "image", "canonical", "robots")
 
 
 def emit(meta, sections=None):

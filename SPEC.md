@@ -1,4 +1,4 @@
-# MeshData 0.1, structured data for micron pages
+# MeshData 0.2, structured data for micron pages
 
 MeshData is a "schema.org for micron": a tiny way for a NomadNet page author to
 declare a page's **type** and **metadata** so crawlers (like Beacon) can
@@ -27,8 +27,9 @@ never JSON. A single typo drops one line, never the whole block.
 
 ### Fields (all optional)
 `type`, `title`, `author`, `date` (or `published` / `updated`), `description`,
-`tags` (comma/semicolon list), `lang`, `image`, `canonical`. `description` is what
-a search engine shows as the result snippet, the `<head>`-meta equivalent.
+`tags` (comma/semicolon list), `lang`, `image`, `canonical`, `robots`.
+`description` is what a search engine shows as the result snippet, the
+`<head>`-meta equivalent. `robots` is the crawl policy, see section 9.
 
 ### Types (a dozen-plus, DC/OG-sized)
 
@@ -90,8 +91,9 @@ better categorization and ranking when present.
   `# +key: value` lines.
 
 ## 5. Versioning
-`0.1`. An optional `# +meshdata: 0.1` line may state the version; absence implies
-current. Unknown versions: read what you understand.
+`0.2`. An optional `# +meshdata: 0.2` line may state the version; absence implies
+current. Unknown versions: read what you understand. 0.2 adds `robots`
+(section 9) and is otherwise identical to 0.1.
 
 ## 6. Commerce extension (0.1): `type: product`
 
@@ -152,6 +154,53 @@ the core set:
 
 Reference producer: rns-news. Reference consumer: Beacon's `type: news` filter and
 its localized "just my area" news.
+
+## 9. Crawl policy (0.2): `robots`
+
+A page may state whether it wants to be crawled at all. The field is `robots`
+and the tokens are robots.txt's, so nobody has to learn a second vocabulary:
+
+```
+# +robots: noindex
+# +robots: noindex, nofollow
+# +robots: none
+```
+
+| token | meaning |
+|---|---|
+| `all` | index this page and follow its links (the default) |
+| `index` | index this page |
+| `noindex` | do NOT index this page |
+| `follow` | follow the links found on this page |
+| `nofollow` | do NOT follow the links found on this page |
+| `none` | shorthand for `noindex, nofollow` |
+
+**Scope.** On a node's `/page/index.mu` this is the policy for the WHOLE node:
+that page is the node speaking for itself, and `noindex` there means do not
+crawl this node, now or later. On any other page it applies to that page alone.
+A consumer that implements only one reading MUST implement the node-level one.
+
+**Conflicts resolve restrictively.** `index, noindex` is `noindex`. Misreading
+a refusal as permission spends someone else's bandwidth; misreading permission
+as a refusal only costs the crawler some index.
+
+**Silence is not refusal.** A page with no `robots` field gets the default.
+MeshData describes pages their authors already chose to publish, and a crawler
+that treated every undeclared page as forbidden would index nothing.
+
+**Why here and not a robots.txt path.** A well-known path (`/page/robots.mu`)
+costs one request per node before a crawler learns anything. MeshData rides the
+head block of a page the crawler is already fetching, so honouring it costs the
+publisher nothing: no extra request, no extra link, no extra radio time. On a
+network where a page fetch can mean a LoRa handshake, that difference is the
+whole point. Consumers are encouraged to support both, and to treat either as
+binding.
+
+**For consumers.** Read it with `meshdata.crawl_policy(md)`, which returns
+`{"index": bool, "follow": bool}`, or `meshdata.may_crawl(raw)` when holding
+raw micron. Do not string-match the field: the tolerant token rules above are
+part of the spec.
+
 
 ## 8. Consumer guidance (ranking & trust)
 
